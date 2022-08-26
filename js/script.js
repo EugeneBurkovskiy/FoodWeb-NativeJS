@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const forms = document.querySelectorAll('form');
     const message = {
-        loading: 'icons/spinner.svg',
+        loading: 'img/spinner/spinner.svg',
         success: 'Спасибо! Скоро мы с вами свяжемся',
         failure: 'Что-то пошло не так...'
     };
@@ -259,27 +259,27 @@ document.addEventListener('DOMContentLoaded', () => {
             form.insertAdjacentElement('afterend', statusMessage);
             const formData = new FormData(form);
 
-            // const object = {};
-            // formData.forEach(function (value, key) {
-            //     object[key] = value;
-            // });
-            // const json = JSON.stringify(object);
+            const object = {};
+            formData.forEach(function (value, key) {
+                object[key] = value;
+            });
 
             fetch('server.php', {
                 method: "POST",
-                // headers: {
-                //     "Content-type": "application/json; charset=utf-8"
-                // },
-                body: formData
-            }).then(data => {
-                console.log(data);
-                showThanksModal(message.success);
-                statusMessage.remove();
-            }).catch(() => {
-                showThanksModal(message.failure);
-            }).finally(() => {
-                form.reset();
-            });
+                headers: {
+                    "Content-type": "application/json; charset=utf-8"
+                },
+                body: JSON.stringify(object)
+            }).then(data => data.text())
+                .then(data => {
+                    console.log(data);
+                    showThanksModal(message.success);
+                    statusMessage.remove();
+                }).catch(() => {
+                    showThanksModal(message.failure);
+                }).finally(() => {
+                    form.reset();
+                });
         });
     }
     function showThanksModal(message) {
